@@ -1,17 +1,17 @@
-name: Docker Image CI
-
+name: Tianqu Docker Image Bulid
 on:
+#github页面手动触发
+  workflow_dispatch: 
+#打tag触发，必须是v开头的
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    tags:
+      - "v*.*"
 env:
   IMAGE_NAME: kube-state-metrics
-  DOCKER_REGISTRY: registry.cn-hangzhou.aliyuncs.com
-
+  DOCKER_REGISTRY: registry.cn-hangzhou.aliyuncs.com/tianqu/kube-state-metric
 jobs:
 
-  build:
+  build-image:
 
     runs-on: ubuntu-latest
     env:
