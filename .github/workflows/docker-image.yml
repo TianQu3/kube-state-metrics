@@ -27,7 +27,6 @@ jobs:
         fi
         echo "v=${VERSION}" >> $GITHUB_OUTPUT
     - name: Login Docker Hub
-      uses: docker/login-action@v1
       with:
         #这里引用的变量为上一步配置的变量
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
