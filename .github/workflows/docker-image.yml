@@ -34,11 +34,11 @@ jobs:
         password: ${{ secrets.DOCKER_HUB_PWD }}
     - name: Build the Docker image
       with:
-          context: .
-          file: ./Dockerfile
-          platforms: |
-            linux/amd64
-            linux/arm64
+        context: .
+        file: ./Dockerfile
+        platforms: |
+          linux/amd64
+          linux/arm64
           #推送到镜像仓库  
           push: true
           # 这里会构建两个版本镜像，
