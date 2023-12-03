@@ -1,0 +1,48 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+env:
+  IMAGE_NAME: kube-state-metrics
+  DOCKER_REGISTRY: registry.cn-hangzhou.aliyuncs.com
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Shanghai
+    outputs:
+      tags: ${{ steps.output-id.outputs.v }}
+    steps:
+    - id: output-id
+      run: |
+        VERSION=edge
+        if [[ $GITHUB_REF == refs/tags/* ]]; then
+          VERSION=${GITHUB_REF#refs/tags/v}
+        fi
+        echo "v=${VERSION}" >> $GITHUB_OUTPUT
+    - name: Login Docker Hub
+        with:
+        #这里引用的变量为上一步配置的变量
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PWD }}
+    - name: Build the Docker image
+      with:
+          context: .
+          file: ./Dockerfile
+          platforms: |
+            linux/amd64
+            linux/arm64
+          #推送到镜像仓库  
+          push: true
+          # 这里会构建两个版本镜像，
+          # 1.dweizhao/backend:latest
+          # 2.  output-id步骤中获取的v，构建dweizhao/backend:edge或者dweizhao/backend:对应tag值
+          tags: |
+            ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.output-id.outputs.v }}
+            ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
