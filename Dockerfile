@@ -5,6 +5,7 @@ ARG GOARCH
 ENV GOARCH=${GOARCH}
 WORKDIR /go/src/k8s.io/kube-state-metrics/
 COPY . /go/src/k8s.io/kube-state-metrics/
+RUN export SHELL=/bin/bash
 
 RUN make build-local
 
